@@ -1,0 +1,251 @@
+---
+title: "BIOS 663 Project"
+date: "2023-04-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+boston <- readLines("boston.txt")
+s <- paste(boston[seq(1,length(boston),2)], boston[seq(2,length(boston),2)])
+boston <- read.table(header=F, stringsAsFactors=F, text=s)
+
+colnames(boston) <- c("CRIM", "ZN", "INDUS", "CHAS", "NOX", "RM", "AGE", "DIS",
+                      "RAD", "TAX", "PTRATIO", "B", "LSTAT", "MEDV")
+
+boston3 <- readLines("boston.txt")
+s <- paste(boston3[seq(1,length(boston3),2)], boston3[seq(2,length(boston3),2)])
+boston3 <- read.table(header=F, stringsAsFactors=F, text=s)
+
+colnames(boston3) <- c("CRIM", "ZN", "INDUS", "CHAS", "NOX", "RM", "AGE", "DIS",
+                      "RAD", "TAX", "PTRATIO", "B", "LSTAT", "MEDV")
+
+boston$MEDV <- log(boston$MEDV)
+boston$DIS <- log(boston$DIS)
+
+boston <- boston[-365, ]
+write.csv(boston, "realboston.csv")
+```
+
+```{r sclae data}
+# scaled all the variables
+boston <- scale(boston, center = TRUE, scale = TRUE)
+boston <- as.data.frame(boston)
+write.csv(boston, "scaledBoston.csv")
+# only keep INDUS, AGE, B, TAX
+boston <- scale(boston, center = TRUE, scale = TRUE)
+library(tidyverse)
+boston <- data.frame(boston)
+boston1 <- boston %>% select(c(INDUS, AGE, B, TAX))
+boston3 <- boston3 %>% select(-c(INDUS, AGE, B, TAX))
+boston2 <- cbind(boston1, boston3)
+write.csv(boston2, "mergedBoston.csv")
+```
+
+CHAS: character
+RM looks normally distributed
+
+RM doesn't seemt to need scaling
+log(boston$CRIM) > scaling
+log(boston$DIS) better
+log(boston$RAD) eh
+log(boston$LSTAT) better
+
+```{r transformation vs scaling}
+descriptive <- function(x){
+  hist(x)
+  boxplot(x)
+  hist(log(x))
+  hist(scale(x))
+  hist(x^2)
+  hist(x^3)
+}
+
+age <- boston3$AGE
+descriptive(age) # scaling looks better for age than taking log
+
+rm <- boston3$RM
+descriptive(rm) # scaling/ transformation may not be needed but it has some outliers
+
+dis <- boston3$DIS
+descriptive(dis) # log seems better
+
+rad <- boston3$RAD # bimodal
+descriptive(rad) # maybe outliers
+
+tax <- boston3$TAX # bimodal
+descriptive(tax)
+
+ptratio <- boston3$PTRATIO # outlier
+descriptive(ptratio) # scaling looks better
+
+B <- boston3$B # bunch of outliers
+descriptive(B)
+
+lstat <- boston3$LSTAT # some outliers
+descriptive(lstat) # taking log looks better
+
+crim <- boston3$CRIM # outliers
+descriptive(crim) # taking log
+
+zn <- boston3$ZN # outliers
+descriptive(zn) # taking log
+
+indus <- boston3$INDUS # looks like a bimodal
+descriptive(indus) # scaling 
+
+chas <- boston3$CHAS # categorical variable
+descriptive(chas)
+
+nox <- boston3$NOX # log looks better
+descriptive(nox)
+
+medv <- boston3$MEDV
+descriptive(medv)
+
+boston$MEDV <- log(boston$MEDV)
+pairs(boston)
+
+boston$DIS <- log(boston$DIS)
+boston$RM <- (boston$RM)^2
+boston3$MEDV <- log(boston3$MEDV)
+plot(boston$AGE, boston$MEDV)
+plot(boston$RM, boston$MEDV)
+plot(boston$DIS, boston$MEDV)
+plot(boston$RAD, boston$MEDV)
+plot(boston$TAX, boston$MEDV)
+plot(boston$PTRATIO, boston$MEDV)
+plot(boston$B, boston$MEDV)
+plot(boston$LSTAT, boston$MEDV)
+plot(boston$CRIM, boston$MEDV)
+plot(boston$ZN, boston$MEDV)
+plot(boston$INDUS, boston$MEDV)
+plot(boston$CHAS, boston$MEDV)
+plot(boston$NOX, boston$MEDV)
+
+lambda <- 
+boxTidwell(MEDV~ RM+CRIM +INDUS + NOX + AGE + DIS  + TAX + PTRATIO + B + LSTAT,~CHAS, data=boston)
+```
+
+
+```{r}
+par(mfrow=c(1,2))
+mergedf2 = subset(mergedf, select = -c(X) )
+head(mergedf2)
+summary(mergedf2)
+summary(df)
+
+qqnorm(mergedf$CRIM)
+qqnorm(df$CRIM)
+
+
+qqnorm(mergedf$AGE)
+qqnorm(df$AGE)
+
+
+qqnorm(mergedf$B)
+qqnorm(df$B)
+##qqplot are same
+
+#CRIM
+par(mfrow=c(1,3))
+summary(mergedf$CRIM)
+hist(mergedf$CRIM)
+qqnorm(mergedf$CRIM)
+qqnorm(df$CRIM)
+
+#ZN
+par(mfrow=c(1,2))
+summary(mergedf$ZN)
+hist(mergedf$ZN)
+qqnorm(mergedf$ZN)
+
+#INDUS
+summary(mergedf$INDUS)
+hist(mergedf$INDUS)
+qqnorm(mergedf$INDUS)
+
+#CHAS
+table(mergedf$CHAS)
+
+#NOX
+summary(mergedf$NOX)
+hist(mergedf$NOX)
+qqnorm(mergedf$NOX)
+
+#INDUS
+summary(mergedf$RM)
+hist(mergedf$RM)
+qqnorm(mergedf$RM)
+
+
+#AGE
+summary(mergedf$AGE)
+hist(mergedf$AGE)
+qqnorm(mergedf$AGE)
+
+#DIS
+hist(mergedf$DIS)
+qqnorm(mergedf$DIS)
+
+#RAD
+table(mergedf$RAD)
+
+library("PerformanceAnalytics")
+mergedf2 = subset(mergedf, select = -c(X, CHAS, RAD) )
+suppressWarnings(chart.Correlation(mergedf2))
+```
+
+
+
+```{r chapter 7}
+pairs(boston3)
+out <- lm(MEDV~CRIM+ZN+INDUS+CHAS+NOX+RM+AGE+DIS+RAD+TAX+PTRATIO+B+LSTAT, data = boston)
+summary(out)
+
+boston$MEDV <- log(boston$MEDV)
+boston.outliers <- as.data.frame(boston[c(365, 369, 373), ])
+
+(boston.outliers$CRIM - mean(boston$CRIM))/sqrt(var(boston$CRIM))
+(boston.outliers$ZN - mean(boston$ZN))/sqrt(var(boston$ZN))
+(boston.outliers$INDUS - mean(boston$INDUS))/sqrt(var(boston$INDUS))
+(boston.outliers$CHAS - mean(boston$CHAS))/sqrt(var(boston$CHAS))
+(boston.outliers$NOX - mean(boston$NOX))/sqrt(var(boston$NOX))
+(boston.outliers$RM - mean(boston$RM))/sqrt(var(boston$RM))
+(boston.outliers$AGE - mean(boston$AGE))/sqrt(var(boston$AGE))
+(boston.outliers$DIS - mean(boston$DIS))/sqrt(var(boston$DIS))
+(boston.outliers$RAD - mean(boston$RAD))/sqrt(var(boston$RAD))
+(boston.outliers$TAX - mean(boston$TAX))/sqrt(var(boston$TAX))
+(boston.outliers$PTRATIO - mean(boston$PTRATIO))/sqrt(var(boston$PTRATIO))
+(boston.outliers$B - mean(boston$B))/sqrt(var(boston$B))
+(boston.outliers$LSTAT - mean(boston$LSTAT))/sqrt(var(boston$LSTAT))
+(boston.outliers$MEDV - mean(boston$MEDV))/sqrt(var(boston$MEDV))
+
+
+sd(boston$CRIM)
+sd(boston$ZN)
+sd(boston$INDUS)
+sd(boston$CHAS)
+sd(boston$NOX)
+sd(boston$RM)
+sd(boston$AGE)
+sd(boston$DIS)
+sd(boston$RAD)
+sd(boston$TAX)
+sd(boston$PTRATIO)
+sd(boston$B)
+sd(boston$LSTAT)
+sd(boston$MEDV)
+
+boston <- boston[-c(369, 372, 373), ]
+boston <- boston[-c(370, 371, 366, 413), ]
+boston <- boston[-c(370, 368, 413), ]
+boston <- boston[-c(368, 413), ]
+
+boston$MEDV <- log(boston$MEDV)
+boston$DIS <- log(boston$DIS)
+
+shapiro.test(boston)
+```
+
+
+
