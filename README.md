@@ -41,8 +41,7 @@ This study investigates which demographic, geographic, and environmental factors
 ## Results
 - **New Model:**  
 
-𝑙𝑜𝑔(𝑀𝐸𝐷𝑉) = β0 + β1𝐶𝑅𝐼𝑀 + β2𝐶𝐻𝐴 + β3𝑁𝑂𝑋 + β4𝑅𝑀 + β5𝑙𝑜𝑔(𝐷𝐼𝑆) + β6𝑅𝐴𝐷
-+ β7𝑃𝑇𝑅𝐴𝑇𝐼𝑂 + β8𝐵 + β9𝐿𝑆𝑇𝐴𝑇 + ε
+𝑙𝑜𝑔(𝑀𝐸𝐷𝑉) = β0 + β1𝐶𝑅𝐼𝑀 + β2𝐶𝐻𝐴 + β3𝑁𝑂𝑋 + β4𝑅𝑀 + β5𝑙𝑜𝑔(𝐷𝐼𝑆) + β6𝑅𝐴𝐷 + β7𝑃𝑇𝑅𝐴𝑇𝐼𝑂 + β8𝐵 + β9𝐿𝑆𝑇𝐴𝑇 + ε
 
 - **Performance:** Adjusted R² = **0.796** (improved from 0.734 in full model)  
 - **Significant predictors:** CRIM, CHAS, NOX, RM, log(DIS), RAD, PTRATIO, B, LSTAT  
