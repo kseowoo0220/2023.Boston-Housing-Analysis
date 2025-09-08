@@ -40,9 +40,19 @@ This study investigates which demographic, geographic, and environmental factors
 
 ## Results
 - **New Model:**  
+
 $$
-\log(MEDV) = \beta_0 + \beta_1 CRIM + \beta_2 CHAS + \beta_3 NOX + \beta_4 RM 
-+ \beta_5 \log(DIS) + \beta_6 RAD + \beta_7 PTRATIO + \beta_8 B + \beta_9 LSTAT + \varepsilon
+\log(MEDV) = \beta_0 
++ \beta_1 CRIM 
++ \beta_2 CHAS 
++ \beta_3 NOX 
++ \beta_4 RM 
++ \beta_5 \log(DIS) 
++ \beta_6 RAD 
++ \beta_7 PTRATIO 
++ \beta_8 B 
++ \beta_9 LSTAT 
++ \varepsilon
 $$
 - **Performance:** Adjusted R² = **0.796** (improved from 0.734 in full model)  
 - **Significant predictors:** CRIM, CHAS, NOX, RM, log(DIS), RAD, PTRATIO, B, LSTAT  
